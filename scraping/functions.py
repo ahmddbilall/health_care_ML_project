@@ -84,8 +84,16 @@ def get_life_expentency_data(driver):
 def get_health_life_expectancy_data(driver):
     pass
 
-def get_all_indicators(driver):
+def get_group_A_indicators(driver):
+    # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
     pass
+
+
+def get_group_B_indicators(driver):
+    # group B example https://data.who.int/indicators/i/CCCEBB2/217795A?m49=004
+    pass
+
+
 
 
 def get_indicator_data_for_group_A(driver):
