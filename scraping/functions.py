@@ -78,11 +78,7 @@ def get_list_of_countries(driver):
 
 # --------------------------------- SHAHZAD ------------------------------------
 
-def get_life_expentency_data(driver):
-    pass
 
-def get_health_life_expectancy_data(driver):
-    pass
 
 def get_group_A_indicators(driver):
     # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
@@ -138,3 +134,8 @@ def get_leading_cause_of_under_5_mortality(driver):
 def get_population_data(driver):
     pass
 
+def get_life_expentency_data(driver):
+    pass
+
+def get_health_life_expectancy_data(driver):
+    pass
