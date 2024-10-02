@@ -63,7 +63,7 @@ def get_list_of_countries(driver):
                     a_tag = li.find_element(By.TAG_NAME, "a")
                     link = a_tag.get_attribute("href")  
                     countries_links.append(link)  
-                
+
             except NoSuchElementException:
                 print("Warning: <ul> or <li> not found in an 'alphabetical-box', skipping...")
                 continue
