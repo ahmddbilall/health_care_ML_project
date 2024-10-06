@@ -35,7 +35,7 @@ def wait_for_page_load(driver, timeout=10):
     If the page does not load in the specified time, an exception is raised.
     '''
     try:
-        WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
     except Exception as e:
         print(f"Error while waiting for page load: {e}")
 
@@ -108,20 +108,154 @@ def get_indicator_data_for_group_B(driver):
 # --------------------------------- NAJAM ------------------------------------
 
 def get_country_name(driver):
-    pass
+    #name=  driver.find_element((By.CLASS_NAME, "page-header__main-info")) 
+    name= driver.find_element(By.CLASS_NAME, "page-header__main-info")
+    country_name=name.find_element(By.TAG_NAME,"h1")
+    return country_name
+
+def get_population_count(driver):
+    expen1=driver.find_element(By.TAG_NAME,"table")
+    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+    expen2=expen_rows[0]
+    ret_row=expen2.find_element(By.TAG_NAME,"td")
+    return ret_row
 
 def get_current_health_expenditure(driver):
-    pass
+    expen1=driver.find_element(By.TAG_NAME,"table")
+    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+    expen2=expen_rows[1]
+    ret_row=expen2.find_element(By.TAG_NAME,"td")
+    return ret_row
+
+  
 
 def get_who_region(driver):
-    pass
+    expen1=driver.find_element(By.TAG_NAME,"table")
+    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+    expen2=expen_rows[2]
+    ret_row=expen2.find_element(By.TAG_NAME,"td")
+    return ret_row
 
 def get_world_bank_income_level(driver):
-    pass
+    expen1=driver.find_element(By.TAG_NAME,"table")
+    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+    expen2=expen_rows[3]
+    ret_row=expen2.find_element(By.TAG_NAME,"td")
+    return ret_row
 
 def get_population_growth_rate(driver):
-    pass
+            try:
+                rate_1 = driver.find_element(By.XPATH, "//*[@id='main']/section/div/div[2]/div/div/div[2]/div/div/div[4]/div/p/span[1]")
+                if rate_1.text.strip():
+                    return rate_1.text
+                else:
+                    return None  
+            except NoSuchElementException:
+                return None
 
+def HIV_infections(driver):
+            try:
+                rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[1]/div/div/div[4]/div/p/span[1]")
+                if rate_1.text.strip():
+                    return rate_1.text
+                else:
+                    return None  
+            except NoSuchElementException:
+                return None
+       
+
+def TB_infections(driver):
+            try:
+                rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[2]/div/div/div[4]/div/p/span[1]")
+                if rate_1.text.strip():
+                    return rate_1.text
+                else:
+                    return None  
+            except NoSuchElementException:
+                return None
+
+def Malaria_cases(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[3]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None
+
+def N_com(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[4]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None
+
+def t_deaths(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[5]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None
+        
+
+def s_deaths(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='health-status-section']/div/div[6]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None
+        
+def p_deaths(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='risk-factors-section']/div/div[1]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None    
+
+def adult_obs(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='risk-factors-section']/div/div[2]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None 
+                        
+def tobaco_use(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='risk-factors-section']/div/div[3]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None 
+
+                                                  
+def Alcohol_con(driver):
+        try:
+            rate_1 = driver.find_element(By.XPATH, "//*[@id='risk-factors-section']/div/div[4]/div/div/div[4]/div/p/span[1]")
+            if rate_1.text.strip():
+                return rate_1.text
+            else:
+                return None  
+        except NoSuchElementException:
+            return None    
+           
 def get_leading_cause_of_death(driver):
     pass
 
@@ -132,10 +266,50 @@ def get_leading_cause_of_under_5_mortality(driver):
     pass
 
 def get_population_data(driver):
-    pass
+#graph_section = driver.find_element(By.TAG_NAME, "line-hover-box svelte-1uvipps")
+     data_points = driver.find_elements(By.CSS_SELECTOR, 'text[data-testid="dataDotViz-line-point-alt-text"]')
+     chart_data = []
+     for point in data_points:
+            year = point.get_attribute('data-test-time-dim')  # The year
+            population = point.text.strip()  # The population value (e.g., "74.1m (projected)")
+            chart_data.append((year, population))
+        
+     return chart_data
 
 def get_life_expentency_data(driver):
-    pass
+    print("Getting life expectancy data...")
+    chart_element = driver.find_element(By.CSS_SELECTOR, '#life-expectancy-section > div > div:nth-child(1) > div > div')
+    row_elements = chart_element.find_elements(By.CSS_SELECTOR, 'g[role="row"]')
+    for each in row_elements:
+        each_row = each.find_elements(By.CSS_SELECTOR, 'text[role="cell"]')
+        for row in each_row:
+            time_dim = row.get_attribute("data-test-time-dim")
+            value = row.text
+            if "Male" in value:
+                value = "Male"
+            elif "Female" in value:
+                value = "Female"
+            if "Total" in value:
+                value = "Total"
+            print(time_dim, value)
+        print("_______________________________")
 
 def get_health_life_expectancy_data(driver):
+    print("Getting  health life expectancy data...")
+    chart_element = driver.find_element(By.CSS_SELECTOR, '#healthy-life-expectancy-section > div > div:nth-child(1) > div > div')
+    row_elements = chart_element.find_elements(By.CSS_SELECTOR, 'g[role="row"]')
+    for each in row_elements:
+        each_row = each.find_elements(By.CSS_SELECTOR, 'text[role="cell"]')
+        for row in each_row:
+            time_dim = row.get_attribute("data-test-time-dim")
+            value = row.text
+            if "Male" in value:
+                value = "Male"
+            elif "Female" in value:
+                value = "Female"
+            if "Total" in value:
+                value = "Total"
+            print(time_dim, value)
+        print("_______________________________")
     pass
+#main > section > div > div.container--contrast.container--no-padding-bottom.container--no-padding-top.health-target-progress-section > div.container.chart-container > div > div:nth-child(1) > div > div > div:nth-child(3) > div.dataDotViz-ChartRenderer-chartContainer > svg > g:nth-child(4) > path.uncertainty-shape.svelte-sfe1yn
