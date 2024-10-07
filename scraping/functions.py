@@ -108,7 +108,6 @@ def get_indicator_data_for_group_B(driver):
 # --------------------------------- NAJAM ------------------------------------
 
 def get_country_name(driver):
-    #name=  driver.find_element((By.CLASS_NAME, "page-header__main-info")) 
     name= driver.find_element(By.CLASS_NAME, "page-header__main-info")
     country_name=name.find_element(By.TAG_NAME,"h1")
     return country_name
@@ -266,7 +265,6 @@ def get_leading_cause_of_under_5_mortality(driver):
     pass
 
 def get_population_data(driver):
-#graph_section = driver.find_element(By.TAG_NAME, "line-hover-box svelte-1uvipps")
      data_points = driver.find_elements(By.CSS_SELECTOR, 'text[data-testid="dataDotViz-line-point-alt-text"]')
      chart_data = []
      for point in data_points:
