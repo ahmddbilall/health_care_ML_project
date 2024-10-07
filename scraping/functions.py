@@ -101,7 +101,6 @@ def get_group_A_indicators(driver):
         for i in indicators:
             links = i.find_elements(By.TAG_NAME, 'a')  # Get links
             headers = i.find_elements(By.TAG_NAME, 'h2')  # Get headers
-            # print("headers successfully extracted.")
 
             h_count = 0
             for header in headers:
@@ -153,7 +152,6 @@ def get_group_B_indicators(driver):
         for i in indicators:
             links = i.find_elements(By.TAG_NAME, 'a')  # Get links
             headers = i.find_elements(By.TAG_NAME, 'h2')  # Get headers
-            # print("headers successfully extracted.")
 
             h_count = 0
             for header in headers:
@@ -183,15 +181,11 @@ def get_group_B_indicators(driver):
 
 
 
-# def get_indicator_data_for_group_A(driver):
-#     # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
-#     pass
 def get_indicator_data_for_group_A(driver, url):
-    driver.get(url)
+    open_page(driver, url)
     
     data = []
     
-    # Check the actual row class for the data.
     rows = driver.find_elements(By.CSS_SELECTOR, '.data-row')  # Update based on actual page structure
     
     for row in rows:
@@ -205,17 +199,11 @@ def get_indicator_data_for_group_A(driver, url):
     return data
 
 
-
-# def get_indicator_data_for_group_B(driver):
-#     # group B example https://data.who.int/indicators/i/CCCEBB2/217795A?m49=004
-#     pass
-
 def get_indicator_data_for_group_B(driver, url):
     driver.get(url)
     
     data = []
     
-    # Check the correct classes for graph year and value.
     years = driver.find_elements(By.CSS_SELECTOR, '.graph-year')  # Update based on actual page
     values = driver.find_elements(By.CSS_SELECTOR, '.graph-value')  # Update based on actual page
     
@@ -440,5 +428,3 @@ def get_health_life_expectancy_data(driver):
                 value = "Total"
             print(time_dim, value)
         print("_______________________________")
-    pass
-#main > section > div > div.container--contrast.container--no-padding-bottom.container--no-padding-top.health-target-progress-section > div.container.chart-container > div > div:nth-child(1) > div > div > div:nth-child(3) > div.dataDotViz-ChartRenderer-chartContainer > svg > g:nth-child(4) > path.uncertainty-shape.svelte-sfe1yn
