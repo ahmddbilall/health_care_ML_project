@@ -80,26 +80,157 @@ def get_list_of_countries(driver):
 
 
 
+
 def get_group_A_indicators(driver):
-    # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
-    pass
+    group_A_links = []
+    groupA_header = ["Number of new HIV infections", "Probability of dying from non-communicable diseases",
+                     "Suicide deaths", "Prevalence of hypertension", "Adult obesity", "Tobacco use",
+                     "Alcohol consumption", "Safely managed sanitation", "Fine particulate matter", "Financial hardship"]
+
+    section = 1
+    for i in range(1, 5):
+        xpath = f"//*[@id='main']/section/div/div[9]/div/div/div/div/ul/li[{i}]"
+        b1 = driver.find_element(By.XPATH, xpath)
+
+        print("Button: ", b1.text)
+        b1.click()
+        time.sleep(1)
+
+        indicators = driver.find_elements(By.XPATH, f"/html/body/div[5]/main/section/div/div[9]/div/div/div/div/section[{section}]/div")
+
+        for i in indicators:
+            links = i.find_elements(By.TAG_NAME, 'a')  # Get links
+            headers = i.find_elements(By.TAG_NAME, 'h2')  # Get headers
+            # print("headers successfully extracted.")
+
+            h_count = 0
+            for header in headers:
+                header_text = header.text.strip()
+
+                l_count = 0
+                if header_text in groupA_header:
+                    print("\nHeader: ", header_text)
+
+                    for link in links:
+                        if l_count == h_count:
+                            href = link.get_attribute('href')
+                            group_A_links.append(href)
+                            print("Link: ", href)
+                            l_count += 1
+                        else:
+                            l_count += 1
+                else:
+                    h_count += 1
+
+        section += 1
+        print("-----------------")
+        continue
+
+    return group_A_links
+
+
+
 
 
 def get_group_B_indicators(driver):
-    # group B example https://data.who.int/indicators/i/CCCEBB2/217795A?m49=004
-    pass
+    group_B_links = []
+    groupB_header=["People living with tuberculosis (TB)","Malaria cases","Road traffic deaths","UHC index score",
+                   "Births attended by skilled health personnel","Family planning","DTP3 immunization","MCV2 immunization",
+                   "Interventions against NTDs","Density of doctors","Density of nurses","Density of pharmacists",
+                   "Density of dentists","WASH development assistance"]
+
+    section = 1
+    for i in range(1, 5):
+        xpath = f"//*[@id='main']/section/div/div[9]/div/div/div/div/ul/li[{i}]"
+        b1 = driver.find_element(By.XPATH, xpath)
+
+        print("Button: ", b1.text)
+        b1.click()
+        time.sleep(1)
+
+        indicators = driver.find_elements(By.XPATH, f"/html/body/div[5]/main/section/div/div[9]/div/div/div/div/section[{section}]/div")
+
+        for i in indicators:
+            links = i.find_elements(By.TAG_NAME, 'a')  # Get links
+            headers = i.find_elements(By.TAG_NAME, 'h2')  # Get headers
+            # print("headers successfully extracted.")
+
+            h_count = 0
+            for header in headers:
+                header_text = header.text.strip()
+
+                l_count = 0
+                if header_text in groupB_header:
+                    print("\nHeader: ", header_text)
+                    
+                    for link in links:
+                        if l_count == h_count:
+                            href = link.get_attribute('href')
+                            group_B_links.append(href)
+                            print("Link: ", href)
+                            l_count += 1
+                        else:
+                            l_count += 1
+                else:
+                    h_count += 1
+
+        section += 1
+        print("-----------------")
+        continue
+
+    return group_B_links
 
 
 
 
-def get_indicator_data_for_group_A(driver):
-    # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
-    pass
+# def get_indicator_data_for_group_A(driver):
+#     # group A example https://data.who.int/indicators/i/49AC786/77D059C?m49=004
+#     pass
+def get_indicator_data_for_group_A(driver, url):
+    driver.get(url)
+    
+    data = []
+    
+    # Check the actual row class for the data.
+    rows = driver.find_elements(By.CSS_SELECTOR, '.data-row')  # Update based on actual page structure
+    
+    for row in rows:
+        try:
+            year = row.find_element(By.CSS_SELECTOR, '.year').text  # Ensure the correct class is used
+            count = row.find_element(By.CSS_SELECTOR, '.count').text  # Ensure the correct class is used
+            data.append({'year': year, 'count': count})
+        except Exception as e:
+            print(f"Error extracting row: {e}")
+    
+    return data
 
-def get_indicator_data_for_group_B(driver):
-    # group B example https://data.who.int/indicators/i/CCCEBB2/217795A?m49=004
-    pass
 
+
+# def get_indicator_data_for_group_B(driver):
+#     # group B example https://data.who.int/indicators/i/CCCEBB2/217795A?m49=004
+#     pass
+
+def get_indicator_data_for_group_B(driver, url):
+    driver.get(url)
+    
+    data = []
+    
+    # Check the correct classes for graph year and value.
+    years = driver.find_elements(By.CSS_SELECTOR, '.graph-year')  # Update based on actual page
+    values = driver.find_elements(By.CSS_SELECTOR, '.graph-value')  # Update based on actual page
+    
+    if len(years) == len(values):
+        for i in range(len(years)):
+            try:
+                year = years[i].text
+                value = values[i].text
+                data.append({'year': year, 'value': value})
+            except Exception as e:
+                print(f"Error extracting graph data: {e}")
+    else:
+        print("Mismatch between years and values.")
+    
+    return data
 
 
 
