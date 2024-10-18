@@ -1,9 +1,0 @@
-git status  ()
-
-git add .     (add all the changes)
-
-git commit -m "Any message " (commit or save those changges )
-
-git push  (puhes it to github in main branch)
-
-git pull ( pulls other people work from github)
