@@ -199,6 +199,27 @@ def get_indicator_data_for_group_B(driver, urls):
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    print("Starting to fetch")
+    for url in urls:
+        open_page(driver, url)
+        time.sleep(2)
+        
+        try: 
+            parent_css = '#data-visualization > div > div > div.col-lg-8 > div:nth-child(2) > div > div > div.dataDotViz-ChartRenderer-chartContainer > div > svg > g > g:nth-child(6)'
+            parent_element = driver.find_element(By.CSS_SELECTOR, parent_css)
+            
+            child_css = '#data-visualization > div > div > div.col-lg-8 > div:nth-child(2) > div > div > div.dataDotViz-ChartRenderer-chartContainer > div > svg > g > g:nth-child(6) > use.border.svelte-oihrhl.selected'
+            aria_pressed_elements = parent_element.find_elements(By.CSS_SELECTOR, child_css)
+            time.sleep(1)
+            
+            for element in aria_pressed_elements:
+                aria_label = element.get_attribute('aria-label')
+                print(f'Aria-label: {aria_label}')
+                data.append(aria_label)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
     return data
 
 # ----------------------------------------------
