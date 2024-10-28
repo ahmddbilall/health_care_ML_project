@@ -1,0 +1,309 @@
+<defs
+  ><linearGradient id="dataDotViz-line1-fade-out-gradient-ltr"
+    ><stop class="fade-out-gradient-stop1 svelte-4havvh" offset="0%"></stop
+    ><stop
+      class="fade-out-gradient-stop2 svelte-4havvh"
+      offset="100%"
+    ></stop></linearGradient
+  ><linearGradient id="dataDotViz-line1-fade-out-gradient-rtl"
+    ><stop class="fade-out-gradient-stop2 svelte-4havvh" offset="0%"></stop
+    ><stop
+      class="fade-out-gradient-stop1 svelte-4havvh"
+      offset="100%"
+    ></stop></linearGradient></defs
+>
+<g
+  transform="translate(45, 15)"
+  fill="transparent"
+  data-testid="dataDotViz-line-plot-area"
+  ><rect
+    width="557.1767578125"
+    height="546.5"
+    fill="transparent"
+    data-testid="dataDotViz-hoverRect"
+  ></rect
+  ><g role="row"
+    ><text
+      role="columnheader"
+      x="0"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2000</text
+    ><text
+      role="columnheader"
+      x="25.376641781903313"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2001</text
+    ><text
+      role="columnheader"
+      x="50.68394847697082"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2002</text
+    ><text
+      role="columnheader"
+      x="75.99125517203832"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2003</text
+    ><text
+      role="columnheader"
+      x="101.29856186710583"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2004</text
+    ><text
+      role="columnheader"
+      x="126.67520364900915"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2005</text
+    ><text
+      role="columnheader"
+      x="151.98251034407664"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2006</text
+    ><text
+      role="columnheader"
+      x="177.28981703914417"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2007</text
+    ><text
+      role="columnheader"
+      x="202.59712373421166"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2008</text
+    ><text
+      role="columnheader"
+      x="227.97376551611498"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2009</text
+    ><text
+      role="columnheader"
+      x="253.28107221118248"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2010</text
+    ><text
+      role="columnheader"
+      x="278.58837890625"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2011</text
+    ><text
+      role="columnheader"
+      x="303.8956856013175"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2012</text
+    ><text
+      role="columnheader"
+      x="329.27232738322084"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2013</text
+    ><text
+      role="columnheader"
+      x="354.57963407828834"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2014</text
+    ><text
+      role="columnheader"
+      x="379.88694077335583"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2015</text
+    ><text
+      role="columnheader"
+      x="405.1942474684233"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2016</text
+    ><text
+      role="columnheader"
+      x="430.5708892503267"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2017</text
+    ><text
+      role="columnheader"
+      x="455.87819594539417"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2018</text
+    ><text
+      role="columnheader"
+      x="481.18550264046166"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2019</text
+    ><text
+      role="columnheader"
+      x="506.49280933552916"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2020</text
+    ><text
+      role="columnheader"
+      x="531.8694511174325"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2021</text
+    ><text
+      role="columnheader"
+      x="557.1767578125"
+      y="545.5"
+      dy="2"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      textLength="30"
+      lengthAdjust="spacingAndGlyphs"
+      style="fill: none"
+      >2022</text
+    ></g
+  >
+  <path
+    d="M0,362.212L25.377,362.212L50.684,360.03L75.991,360.03L101.299,362.212L126.675,362.212L151.983,364.394L177.29,366.576L202.597,368.758L227.974,370.94L253.281,375.304L278.588,364.394L303.896,366.576L329.272,370.94L354.58,364.394L379.887,364.394L405.194,366.576L430.571,370.94L455.878,377.486L481.186,384.032L506.493,392.76L531.869,388.396L557.177,384.032"
+    class="uncertainty-line svelte-sfe1yn"
+    data-testid="dataDotViz-line-low-path"
+    data-spatial-dim="001"
+    style="stroke: var(--dd-color-category-base-2)"
+  ></path>
+  <path
+    class="uncertainty-shape svelte-sfe1yn"
+    d="M0,146.194L25.377,146.194L50.684,148.376L75.991,148.376L101.299,152.74L126.675,159.286L151.983,165.832L177.29,176.742L202.597,189.834L227.974,198.562L253.281,213.836L278.588,237.838L303.896,253.112L329.272,268.386L354.58,290.206L379.887,305.48L405.194,325.118L430.571,336.028L455.878,342.574L481.186,351.302L506.493,355.666L531.869,349.12L557.177,342.574L557.177,384.032L531.869,388.396L506.493,392.76L481.186,384.032L455.878,377.486L430.571,370.94L405.194,366.576L379.887,364.394L354.58,364.394L329.272,370.94L303.896,366.576L278.588,364.394L253.281,375.304L227.974,370.94L202.597,368.758L177.29,366.576L151.983,364.394L126.675,362.212L101.299,362.212L75.991,360.03L50.684,360.03L25.377,362.212L0,362.212Z"
+    data-testid="dataDotViz-line-uncertainty"
+    data-spatial-dim="001"
+    style="fill: var(--dd-color-category-base-2)"
+  ></path>
+  <path
+    class="line svelte-1uvipps"
+    d="M0,261.84L25.377,261.84L50.684,261.84L75.991,261.84L101.299,264.022L126.675,266.204L151.983,270.568L177.29,277.114L202.597,283.66L227.974,290.206L253.281,298.934L278.588,303.298L303.896,312.026L329.272,320.754L354.58,327.3L379.887,336.028L405.194,346.938L430.571,353.484L455.878,360.03L481.186,366.576L506.493,375.304L531.869,368.758L557.177,364.394"
+    data-spatial-dim="001"
+    data-testid="dataDotViz-line-path"
+    style="stroke: var(--dd-color-category-stronger-2)"
+  ></path>
+  <path
+    class="line-hover-box svelte-1uvipps"
+    d="M0,261.84L25.377,261.84L50.684,261.84L75.991,261.84L101.299,264.022L126.675,266.204L151.983,270.568L177.29,277.114L202.597,283.66L227.974,290.206L253.281,298.934L278.588,303.298L303.896,312.026L329.272,320.754L354.58,327.3L379.887,336.028L405.194,346.938L430.571,353.484L455.878,360.03L481.186,366.576L506.493,375.304L531.869,368.758L557.177,364.394"
+    data-testid="dataDotViz-line-path-hover"
+    stroke="transparent"
+  ></path>
+  
+  

@@ -151,11 +151,10 @@ def get_group_B_indicators(driver):
 # -- for following two functions only, return the a dictionary with the year as key and value as value. 
 # return 24 values for each year          
 def get_indicator_data_for_group_A(driver, urls):
-    all_data = {}  # Dictionary to store data for each indicator
+    all_data = {}  
     
     for name, url in urls.items():
-        print(f"Fetching data for: {name}")
-        driver.get(url)  # Open the page for each indicator
+        driver.get(url)
         
         time.sleep(2)  # Wait for page to load (increase if needed)
 
@@ -170,29 +169,25 @@ def get_indicator_data_for_group_A(driver, urls):
 
             for option in options:
                 option.click()  # Select the option
-                print(f"Selected: {option.text}")
                 
                 time.sleep(1)  # Allow data to load after selection
 
                 try:
-                    # Extract the data point after selection
                     span_element = driver.find_element(By.CSS_SELECTOR, 'tr.border-bottom.svelte-193mdey.selected td[data-testid="dataDotViz-collapsibleTable-data-point"] span.svelte-193mdey')
                     data_point = span_element.text
-                    print(f"Data Point: {data_point}")
                     indicator_data.append({option.text: data_point})  # Append option and data to list
                     
                 except Exception as e:
-                    print(f"Error fetching data for {option.text}: {str(e)}")
+                    print(f"Error fetching data for {option.text}")
             
             all_data[name] = indicator_data  # Store the collected data for the current indicator
 
         except Exception as e:
-            print(f"Error on URL {url}: {str(e)}")
+            print(f"Error on URL {url}")
 
     return all_data
 def get_indicator_data_for_group_B(driver, urls):
     data = {}  # Dictionary to store data for each indicator
-    print("Starting to fetch data...")
 
     for name, url in urls.items():  # Iterate over the dictionary
         open_page(driver, url)  # Open the page for each URL
@@ -265,18 +260,22 @@ def get_population_growth_rate(driver):
 def get_population_data(driver):
      data_points = driver.find_elements(By.CSS_SELECTOR, 'text[data-testid="dataDotViz-line-point-alt-text"]')
 
-     chart_data = []
+     chart_data = {}
+     i = 0
      for point in data_points:
             year = point.get_attribute('data-test-time-dim')  # The year
             population = point.text.strip()  # The population value (e.g., "74.1m (projected)")
-            chart_data.append((year, population))
+            
+            chart_data[year] = population
+            i+=1
+            if i==25:
+                break
     
      return chart_data
 
 # -- for following two functions only, return the a dictionary with the year as key and value as value. 
 # Only return values of total not for male and female          
 def get_life_expectancy_data(driver):
-    print("Getting life expectancy data...")
     life_expectancy_data = []
 
     try:
@@ -323,7 +322,6 @@ def get_life_expectancy_data(driver):
 
 
 def get_health_life_expectancy_data(driver):
-    print("Getting health life expectancy data...")
     health_life_expectancy_data = []
 
     try:
