@@ -6,3 +6,6 @@ matplotlib
 scikit-learn
 streamlit
 category_encoders
+tensorflow
+keras
+geopandas
