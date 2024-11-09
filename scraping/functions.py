@@ -4,12 +4,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from selenium.common.exceptions import NoSuchElementException,TimeoutException
+from selenium.webdriver.edge.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
+from scipy.interpolate import interp1d
+import re
 
 def start_browser():
     '''
-    Initializes the WebDriver and returns the driver instance.
+    Initializes the WebDriver in headless mode and returns the driver instance.
     '''
-    driver = webdriver.Edge()  
+    options = Options()
+    options.add_argument("--headless")  
+    driver = webdriver.Edge(options=options)
     return driver
 
 def open_page(driver ,link):
@@ -29,7 +35,7 @@ def wait_for_page_load(driver, timeout=4):
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
     except Exception as e:
-        print(f"Error while waiting for page load: {e}")
+        print(f"Error while waiting for page load:")
 
 def get_list_of_countries(driver):
     """Extracts all the links from the 'alphabetical-box' divs on the page."""
@@ -61,30 +67,42 @@ def get_list_of_countries(driver):
     return countries_links
 
 def get_country_name(driver):
-    name= driver.find_element(By.CLASS_NAME, "page-header__main-info")
-    country_name=name.find_element(By.TAG_NAME,"h1")
-    return country_name.text
+    try:
+        name= driver.find_element(By.CLASS_NAME, "page-header__main-info")
+        country_name=name.find_element(By.TAG_NAME,"h1")
+        return country_name.text
+    except Exception as e:
+        return None
 
 def get_current_health_expenditure(driver):
-    expen1=driver.find_element(By.TAG_NAME,"table")
-    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
-    expen2=expen_rows[1]
-    ret_row=expen2.find_element(By.TAG_NAME,"td")
-    return ret_row.text
+    try:    
+        expen1=driver.find_element(By.TAG_NAME,"table")
+        expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+        expen2=expen_rows[1]
+        ret_row=expen2.find_element(By.TAG_NAME,"td")
+        return ret_row.text
+    except Exception as e:
+        return None
 
 def get_who_region(driver):
-    expen1=driver.find_element(By.TAG_NAME,"table")
-    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
-    expen2=expen_rows[2]
-    ret_row=expen2.find_element(By.TAG_NAME,"td")
-    return ret_row.text
+    try:    
+        expen1=driver.find_element(By.TAG_NAME,"table")
+        expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+        expen2=expen_rows[2]
+        ret_row=expen2.find_element(By.TAG_NAME,"td")
+        return ret_row.text
+    except Exception as e:
+        return None
 
 def get_world_bank_income_level(driver):
-    expen1=driver.find_element(By.TAG_NAME,"table")
-    expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
-    expen2=expen_rows[3]
-    ret_row=expen2.find_element(By.TAG_NAME,"td")
-    return ret_row.text
+    try:    
+        expen1=driver.find_element(By.TAG_NAME,"table")
+        expen_rows=expen1.find_elements(By.TAG_NAME,"tr")
+        expen2=expen_rows[3]
+        ret_row=expen2.find_element(By.TAG_NAME,"td")
+        return ret_row.text
+    except Exception as e:
+        return None
 
 def get_population_growth_rate(driver):
             try:
@@ -93,7 +111,7 @@ def get_population_growth_rate(driver):
                     return rate_1.text
                 else:
                     return None  
-            except NoSuchElementException:
+            except Exception as e:
                 return None
 
 def get_indicators(driver):
@@ -105,11 +123,13 @@ def get_indicators(driver):
     ]
 
     section = 1
-    for i in range(1, 5):
-        xpath = f"//*[@id='main']/section/div/div[9]/div/div/div/div/ul/li[{i}]"
-        b1 = driver.find_element(By.XPATH, xpath)
 
-        b1.click()
+    ele = driver.find_element(By.CLASS_NAME,'progressive-tabs-tablist')
+    li_elements = ele.find_elements(By.TAG_NAME, 'li')
+
+    # Iterate over each li element and click it
+    for li in li_elements:
+        ActionChains(driver).move_to_element(li).click(li).perform()
 
         indicators = driver.find_elements(By.XPATH, f"/html/body/div[5]/main/section/div/div[9]/div/div/div/div/section[{section}]/div")
 
@@ -137,7 +157,7 @@ def get_indicator_data(driver, urls):
     all_data = {}  
     
     for name, url in urls.items():
-        driver.get(url)
+        open_page(driver, url)
         
         time.sleep(2) 
 
@@ -167,6 +187,52 @@ def get_indicator_data(driver, urls):
             print(f"Error on URL {url}")
 
     return all_data
+
+
+import re
+from scipy.interpolate import interp1d
+
+
+def interpolate_pop(data, target_year=2024):
+    # Extract the data while cleaning the values
+    year_values = {}
+    for year, value in data.items():
+        # Remove brackets and unit characters (like 'm' or 'k') if present
+        if '[' in value:
+            value = value.split('[')[0].strip()
+        main_value_match = re.match(r"([\d.]+)", value)
+        if main_value_match:
+            year_values[int(year)] = float(main_value_match.group(0))
+    
+    # Set up the years to interpolate between
+    interpolated_data = {}
+    start_year = 2000
+    end_year = target_year
+
+    for year in range(start_year, end_year + 1):
+        if year in year_values:
+            interpolated_data[year] = year_values[year]
+        else:
+            previous_years = [y for y in year_values if y < year]
+            next_years = [y for y in year_values if y > year]
+
+            # If there are years before and after the current year, interpolate linearly
+            if previous_years and next_years:
+                prev_year = max(previous_years)
+                next_year = min(next_years)
+                slope = (year_values[next_year] - year_values[prev_year]) / (next_year - prev_year)
+                interpolated_data[year] = year_values[prev_year] + slope * (year - prev_year)
+            # If there are only previous years, extend the slope of the last two known points
+            elif previous_years:
+                last_two_years = sorted(previous_years)[-2:]
+                if len(last_two_years) == 2:
+                    y1, y2 = last_two_years
+                    slope = (year_values[y2] - year_values[y1]) / (y2 - y1)
+                    interpolated_data[year] = year_values[y2] + slope * (year - y2)
+
+    return interpolated_data
+
+
 
 def get_population_data(driver):
      data_points = driver.find_elements(By.CSS_SELECTOR, 'text[data-testid="dataDotViz-line-point-alt-text"]')
@@ -211,7 +277,7 @@ def get_life_expectancy_data(driver):
             life_expectancy_data.append(row_data)
     
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred:")
         dummy_data = {
             "time_dim": "Year",
             "Gender": "Unknown",
@@ -249,7 +315,7 @@ def get_health_life_expectancy_data(driver):
             health_life_expectancy_data.append(row_data)
     
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred:")
         dummy_data = {
             "time_dim": "Year",
             "Gender": "Unknown",
@@ -262,7 +328,8 @@ def get_health_life_expectancy_data(driver):
 def interpolate_life_and_health_expectancy_data(data_list):
     total_data = next((entry for entry in data_list if entry.get(None) == "Total"), None)
     if not total_data:
-        return "No 'Total' category found in the data list."
+        return {2000:None,2001:None,2002:None,2003:None,2004:None,2005:None,2006:None,2007:None,2008:None,2009:None,2010:None,20011:None,2012:None,2013:None,2014:None,2015:None,
+                2016:None,2017:None,2018:None,2019:None,2020:None,2021:None,2022:None,2023:None,2024:None}
 
     year_values = {int(year): float(value) for year, value in total_data.items() if year is not None}
     
@@ -294,36 +361,50 @@ def interpolate_life_and_health_expectancy_data(data_list):
 
 def interpolate_indicators_data(data):
     def interpolate_years(year_data):
-        year_values = {int(year): float(value.strip('%')) if '%' in value else float(value)
-                       for item in year_data for year, value in item.items()}
+        try:
+            # Parse the year values from year_data
+            year_values = {int(year): float(value.strip('%')) if '%' in value else float(value)
+                           for item in year_data for year, value in item.items()}
 
-        interpolated = {}
-        for year in range(2000, 2025):
-            if year in year_values:
-                interpolated[year] = year_values[year]
-            else:
-                previous_years = [y for y in year_values if y < year]
-                next_years = [y for y in year_values if y > year]
-
-                if previous_years and next_years:
-                    prev_year = max(previous_years)
-                    next_year = min(next_years)
-                    slope = (year_values[next_year] - year_values[prev_year]) / (next_year - prev_year)
-                    interpolated[year] = year_values[prev_year] + slope * (year - prev_year)
-                elif previous_years:
-                    last_two_years = sorted(previous_years)[-2:]
-                    if len(last_two_years) == 2:
-                        y1, y2 = last_two_years
-                        slope = (year_values[y2] - year_values[y1]) / (y2 - y1)
-                        interpolated[year] = year_values[y2] + slope * (year - y2)
+            interpolated = {}
+            for year in range(2000, 2025):
+                if year in year_values:
+                    interpolated[year] = year_values[year]
                 else:
-                    interpolated[year] = year_values[min(next_years)]  
+                    # Determine previous and next years with available data
+                    previous_years = [y for y in year_values if y < year]
+                    next_years = [y for y in year_values if y > year]
 
-        if '%' in year_data[0].get(str(min(year_values.keys())), ''):
-            interpolated = {year: f"{value:.1f}%" for year, value in interpolated.items()}
-        else:
-            interpolated = {year: f"{value:.1f}" for year, value in interpolated.items()}
-        return interpolated
+                    if previous_years and next_years:
+                        # Perform interpolation using the nearest years
+                        prev_year = max(previous_years)
+                        next_year = min(next_years)
+                        slope = (year_values[next_year] - year_values[prev_year]) / (next_year - prev_year)
+                        interpolated[year] = year_values[prev_year] + slope * (year - prev_year)
+                    elif previous_years:
+                        # Extrapolate from the last two previous years if available
+                        last_two_years = sorted(previous_years)[-2:]
+                        if len(last_two_years) == 2:
+                            y1, y2 = last_two_years
+                            slope = (year_values[y2] - year_values[y1]) / (y2 - y1)
+                            interpolated[year] = year_values[y2] + slope * (year - y2)
+                    elif next_years:
+                        # Assign the minimum future value if no previous data exists
+                        interpolated[year] = year_values[min(next_years)]
+                    else:
+                        # Handle case with no available data
+                        interpolated[year] = None
+
+            # Format data as percentage if necessary
+            if year_data and '%' in year_data[0].get(str(min(year_values.keys())), ''):
+                interpolated = {year: f"{value:.1f}%" for year, value in interpolated.items() if value is not None}
+            else:
+                interpolated = {year: f"{value:.1f}" for year, value in interpolated.items() if value is not None}
+            return interpolated
+
+        except ValueError as e:
+            print(f"Error processing year data: {e}")
+            return {}  # Return empty dict in case of error
 
     processed_data = {}
     for indicator, year_data in data.items():

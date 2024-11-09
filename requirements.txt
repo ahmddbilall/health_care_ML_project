@@ -1,3 +1,8 @@
 selenium==4.25.0
 pandas==2.2.3
 ipykernel
+scipy
+matplotlib
+scikit-learn
+streamlit
+category_encoders
