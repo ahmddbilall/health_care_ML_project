@@ -1,11 +1,11 @@
-selenium==4.25.0
+# selenium==4.25.0
 pandas==2.2.3
 ipykernel
-scipy
+# scipy
 matplotlib
-scikit-learn
-streamlit
-category_encoders
-tensorflow
-keras
-geopandas
+# scikit-learn
+# streamlit
+# category_encoders
+# tensorflow
+# keras
+# geopandas
