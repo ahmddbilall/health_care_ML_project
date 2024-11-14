@@ -2,13 +2,17 @@ import streamlit as st
 import pandas as pd
 import pickle
 from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import os
+
 
 def show():
     st.title("Healthcare Regression Analysis")
     st.write("Select the country, WHO region, and year to get predictive insights on healthcare metrics.")
     
-    # Load the data
-    df = pd.read_csv('../application/data.csv')
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data.csv')
+    df = pd.read_csv(file_path)
+
     
     # Dropdowns and slider for user inputs
     regions = df['who_region'].unique()
@@ -35,7 +39,9 @@ def show():
 
 def make_prediction(region, name, income_level, year):
     # Load the data
-    df = pd.read_csv('../application/data.csv')
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data.csv')
+
+    df = pd.read_csv(file_path)
     
     # Define feature columns and target indicators
     feature_columns = [
@@ -78,6 +84,7 @@ def make_prediction(region, name, income_level, year):
     return predictions
 
 def scale_data(input_data,indicator):
+
     with open(f'../models/pklFiles/scaler_{indicator}.pkl', 'rb') as file:
         scaler = pickle.load(file)
     input_df_scaled = pd.DataFrame([input_data])
