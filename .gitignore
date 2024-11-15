@@ -1,3 +1,6 @@
 env/
 
 scraping/__pycache__/
+
+
+application/pages/__pycache__/
