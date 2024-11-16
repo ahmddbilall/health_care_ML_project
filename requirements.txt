@@ -1,6 +1,6 @@
 selenium==4.25.0
-pandas==2.2.3
 ipykernel
+pandas==2.2.3
 scipy
 matplotlib
 scikit-learn
@@ -12,3 +12,5 @@ seaborn
 xgboost
 prophet
 statsmodels
+plotly
+nbformat
