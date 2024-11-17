@@ -14,3 +14,5 @@ prophet
 statsmodels
 plotly
 nbformat
+fbprophet
+Prophet
