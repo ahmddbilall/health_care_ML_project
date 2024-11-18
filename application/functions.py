@@ -8,6 +8,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.preprocessing import StandardScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense
+import concurrent.futures
 from sklearn.metrics import r2_score
 import streamlit as st
 import plotly.express as px
@@ -371,3 +372,104 @@ def create_2d_scatter_plot(indicator):
     
     # Display the plot in Streamlit
     st.plotly_chart(fig)
+
+
+
+def make_predictions(indicator, country, year):
+    # Get the current year
+    current_year = year
+    
+    # Generate a list of years starting from the next year to the next 'years_ahead' years
+    years_to_predict = [current_year + i for i in range(1, 10 + 1)]
+    
+    # Initialize an empty dictionary to store predictions
+    predictions = {}
+    
+    # Function to get prediction for a specific year
+    def get_prediction_for_year(year):
+        return year, get_all_predictions([indicator], country, year)
+    
+    # Use ThreadPoolExecutor to fetch predictions concurrently
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Map each year to the get_prediction_for_year function
+        results = executor.map(get_prediction_for_year, years_to_predict)
+        
+        # Store the predictions in the dictionary
+        for year, prediction in results:
+            predictions[year] = prediction
+    
+    return predictions
+
+
+def plot_predictions(predictions):
+    """
+    This function takes a dictionary of predictions and plots the trend over time in a line chart, 
+    adding small fluctuations to the values.
+    
+    :param predictions: Dictionary with years as keys and prediction values as sub-dictionaries
+    :return: None
+    """
+    # Convert the predictions dictionary into a pandas DataFrame
+    df = pd.DataFrame.from_dict(predictions, orient='index')
+    df.reset_index(inplace=True)
+    df.columns = ['Year', 'Prevalence of hypertension%']
+    
+    # Add small random noise to the 'Prevalence of hypertension%' values
+    noise = np.random.normal(0, 0.1, size=df.shape[0])  # Small noise with mean=0 and std=0.1
+    df['Prevalence of hypertension%'] += noise  # Add noise to the column
+    
+    # Create the Plotly line chart
+    fig = px.line(df, x='Year', y='Prevalence of hypertension%', title='Prevalence of Hypertension Over Time' ,
+                  
+                   markers=True,)
+    
+    # Update the x-axis and y-axis for better visibility
+    fig.update_xaxes(rangeslider_visible=True)
+    fig.update_yaxes(range=[df['Prevalence of hypertension%'].min() - 1, df['Prevalence of hypertension%'].max() + 1])  # Adjust y-range to keep trend visible
+    fig.update_layout(template='plotly_dark', height=900)  # Set a dark theme for the plot and increase height
+    # Show the plot in Streamlit
+    st.plotly_chart(fig)
+def plot_predictions_2(predictions):
+    """
+    This function takes a dictionary of predictions and plots a histogram on the Date axes 
+    with daily markers and average value bars, adding noise to show fluctuations.
+    
+    :param predictions: Dictionary with years as keys and prediction values as sub-dictionaries.
+    :return: None
+    """
+    # Convert the predictions dictionary into a pandas DataFrame
+    years = list(predictions.keys())
+    values = [list(prediction.values())[0] for prediction in predictions.values()]
+    
+    df = pd.DataFrame({
+        'Year': years,
+        'Prediction': values
+    })
+    
+    # Add small random noise to the predictions for fluctuations
+    noise = np.random.normal(0, 0.2, size=df.shape[0])  # Small noise with mean=0 and std=0.2
+    df['Prediction'] += noise  # Add noise to the prediction values
+    
+    # Plotting a histogram and a scatter plot on the same graph
+    fig = px.histogram(df, x="Year", y="Prediction", histfunc="avg", title="Prediction over Time")
+    
+    # Update the histogram with custom binning and x-axis
+    fig.update_traces(xbins_size=1)  # Binning to show each year distinctly
+    fig.update_xaxes(showgrid=True, ticklabelmode="period", tickformat="%Y")
+    
+    # Customize layout to have a clean, natural appearance
+    fig.update_layout(
+        bargap=0.2,  # Slightly larger gap between bars for a more airy look
+        font=dict(color='black'),  # Set font color to black for better readability
+        title_font=dict(size=22),  # Slightly smaller title size for a balanced look
+        title_x=0.5,  # Center the title
+        margin={"r": 20, "t": 40, "l": 40, "b": 40},  # Adjust margins for a cleaner look
+    )
+    
+    # Adding scatter trace for daily markers (set to blue)
+    fig.add_trace(go.Scatter(mode="markers", x=df["Year"], y=df["Prediction"], name="Predictions", marker=dict(color='blue')))
+    
+    # Show the plot in Streamlit
+    st.plotly_chart(fig)
+
+
