@@ -1,11 +1,15 @@
 import streamlit as st
 import pandas as pd
 from functions  import *
-# Page Header
 import os
-st.header("Clustering Analysis")
 
-# Create Columns
+st.set_page_config(page_title="Clustering", page_icon="🔍")
+
+
+st.title("Clustering Analysis")
+
+
+
 col1, col2 = st.columns([1, 3])
 
 target_indicators = [
