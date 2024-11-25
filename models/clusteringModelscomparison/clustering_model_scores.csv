@@ -1,0 +1,6 @@
+Feature,Autoencoders,DBSCAN,KMeans
+Number of new HIV infections,0.8572,0.7553,0.6472
+Tobacco use%,0.6393,0.837,0.5478
+Alcohol consumption,0.6643,0.7947,0.7497
+Population,0.7818,0.6818,0.3818
+Prevalence of hypertension%,0.8084,0.7084,0.6084
