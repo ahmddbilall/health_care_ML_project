@@ -2,12 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from functions import  *
-st.set_page_config(layout="wide")
 
-st.header("Regression Analysis")
-df1 = pd.read_csv('../models/pklFiles/ClusterDataForTimeSeries.csv')
-df2 = pd.read_csv('../application/data.csv')
+st.set_page_config(page_title="Regression Analysis", page_icon="📊",layout="wide")
 
+
+st.title("Regression Analysis of single indicator")
+
+
+df1 = pd.read_csv(f'./application/ClusterDataForTimeSeries.csv')
+df2 = pd.read_csv('./application/data.csv')
 def predict_all_indicators():
     countries = df1['name'].unique()   
     regions = df2['who_region'].unique()

@@ -17,7 +17,7 @@ import plotly.graph_objects as go
 from concurrent.futures import ThreadPoolExecutor
 
 
-def load_model(indicator, cluster_id, model_dir='../models/pklFiles/'):
+def load_model(indicator, cluster_id, model_dir='./models/pklFiles/'):
     model_filename = None
     model_name = None
     for file in os.listdir(model_dir):
@@ -54,7 +54,7 @@ def load_model(indicator, cluster_id, model_dir='../models/pklFiles/'):
 
 
 def predict_value(year, country, indicator):
-    df = pd.read_csv('../models/pklFiles/ClusterDataForTimeSeries.csv')
+    df = pd.read_csv('./application/ClusterDataForTimeSeries.csv')
     
     try:
         cluster = df.loc[df['name'] == country, 'Assigned Cluster'].values[0]
@@ -66,7 +66,6 @@ def predict_value(year, country, indicator):
 
     print(model)
 
-    # Prepare input data
     input_data = pd.DataFrame({'year': [year]})
 
     if model['name']=='LSTM':
@@ -113,27 +112,22 @@ def predictions_table(predictions,population):
 
 
 def interactive_prediction_plot(predictions):
-    # Fetch predictions (replace this with actual session state if needed)
-    # Convert the predictions to a DataFrame
     df = pd.DataFrame(list(predictions.items()), columns=['Health Indicator', 'Population Effect%'])
 
-    # Create an interactive bar chart using Plotly
     fig = px.bar(df, x='Health Indicator', y='Population Effect%', 
                  title="Health Indicator Predictions",
                  labels={'Population Effect%': 'Population Effect (%)', 'Health Indicator': 'Health Indicator'},
-                 color='Population Effect%',  # Color bars based on effect
-                 color_continuous_scale='rainbow',  # Choose a color scale
-                 hover_data={'Health Indicator': True, 'Population Effect%': True},  # Show details on hover
-                 template='plotly_dark')  # Optional: Use a dark theme
+                 color='Population Effect%',  
+                 color_continuous_scale='rainbow',  
+                 hover_data={'Health Indicator': True, 'Population Effect%': True},  
+                 template='plotly_dark')  
 
-    # Add hover effects, zoom, and interactivity
     fig.update_layout(
-        hovermode="x unified",  # Unified hover for better comparison
-        xaxis_tickangle=-45,  # Rotate x-axis labels for better readability
-        showlegend=False  # Optional: Hide legend if not needed
+        hovermode="x unified",  
+        xaxis_tickangle=-45,  
+        showlegend=False  
     )
 
-    # Display the Plotly chart in Streamlit
     st.plotly_chart(fig)
 
 def get_risk_and_suggestion(indicator, value):
@@ -158,7 +152,7 @@ def create_decision_making_plot(predictions):
     suggestions = []
     sizes = []
 
-    size_factor = 5  # Size scaling factor for circles
+    size_factor = 5  
 
     for indicator, value in predictions.items():
         risk_status, color, suggestion = get_risk_and_suggestion(indicator, value)
@@ -167,11 +161,10 @@ def create_decision_making_plot(predictions):
         risks.append(risk_status)
         colors.append(color)
         suggestions.append(suggestion)
-        sizes.append(value * size_factor)  # Proportional size of circles based on prediction
+        sizes.append(value * size_factor)  
 
     fig = go.Figure()
 
-    # Add circles with decision-making suggestions
     fig.add_trace(go.Scatter(
         x=indicators,
         y=values,
@@ -183,10 +176,9 @@ def create_decision_making_plot(predictions):
             line=dict(width=2, color='black')
         ),
         text=indicators,
-        hoverinfo='text+name',  # Display indicator name and value
+        hoverinfo='text+name',  
     ))
 
-    # Add suggestions as annotations
     for i, indicator in enumerate(indicators):
         fig.add_annotation(
             x=indicators[i],
@@ -235,7 +227,6 @@ def create_risk_pie_chart(predictions):
     high_risk_count = 0
     low_risk_count = 0
     
-    # Classify the predictions into High and Low Risk
     for indicator, value in predictions.items():
         risk_status, _ = get_risk(indicator, value)
         if risk_status == "High Risk":
@@ -243,33 +234,30 @@ def create_risk_pie_chart(predictions):
         else:
             low_risk_count += 1
     
-    # Prepare data for pie chart
     risk_labels = ['High Risk', 'Low Risk']
     risk_values = [high_risk_count, low_risk_count]
 
-    # Create enhanced pie chart
     fig = go.Figure(data=[go.Pie(
         labels=risk_labels, 
         values=risk_values, 
         hole=0.2,
-        hoverinfo='label+percent',  # Show percentage on hover
-        textinfo='label+value+percent',  # Display label, value, and percentage inside the pie
-        textfont=dict(size=15, color='white'),  # Customize text style inside the chart
+        hoverinfo='label+percent',  
+        textinfo='label+value+percent',  
+        textfont=dict(size=15, color='white'),  
         marker=dict(
-            colors=['#FF4136', '#2ECC40'],  # Set custom colors for High and Low risk
-            line=dict(color='black', width=2)  # Add border around the pie segments
+            colors=['#FF4136', '#2ECC40'],  
+            line=dict(color='black', width=2)  
         )
     )])
 
-    # Update layout with enhanced visual features
     fig.update_layout(
         title="Risk Level Distribution",
         template="plotly_dark",
         showlegend=True,
-        legend=dict(x=0.85, y=1, font=dict(size=12)),  # Position and size of legend
-        width=600,  # Keep the width as per the requirement
-        height=300,  # Keep the height as per the requirement
-        margin=dict(t=40, b=40, l=40, r=40),  # Set margin for better spacing
+        legend=dict(x=0.85, y=1, font=dict(size=12)),  
+        width=600,  
+        height=300,  
+        margin=dict(t=40, b=40, l=40, r=40),  
       
     )
     
@@ -278,18 +266,14 @@ def create_risk_pie_chart(predictions):
 
 
 def make_clustered_risk_graph(indicator):
-    # Get the current file's directory and form the absolute path for the CSV
     base_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.abspath(os.path.join(base_dir, f'../models/clusters_{indicator}.csv'))
     
-    # Load CSV data into a DataFrame
     df = pd.read_csv(csv_path)
     
-    # Ensure the necessary columns are present
     if 'risk' not in df.columns or 'Assigned Cluster' not in df.columns or indicator not in df.columns:
         raise ValueError("CSV must contain 'risk', 'Assigned Cluster', and the selected indicator columns.")
     
-    # Plot the clusters with the 'risk' values
     fig = px.scatter(
         df,
         x=indicator,
@@ -305,21 +289,17 @@ def make_clustered_risk_graph(indicator):
 
 
 def create_3d_scatter_plot_single_indicator(indicator):
-    # Get the current file's directory and form the absolute path for the CSV
     base_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.abspath(os.path.join(base_dir, f'../models/clusters_{indicator}.csv'))
     
-    # Load CSV data into a DataFrame
     df = pd.read_csv(csv_path)
-    # 3D Scatter Plot using Plotly
     fig = px.scatter_3d(df, 
                         x='name', 
                         y=indicator, 
-                        z=indicator,  # Same indicator for Y and Z axis
-                        color='risk',  # Optional: Color by country
+                        z=indicator,  
+                        color='risk', 
                         title=f'3D Scatter Plot of {indicator} across Countries')
     
-    # Update Layout for better aesthetics
     fig.update_layout(
         scene=dict(
             xaxis_title='Country',
@@ -327,74 +307,59 @@ def create_3d_scatter_plot_single_indicator(indicator):
             zaxis_title=indicator
         ),
         template='plotly_dark',
-             width=1500,  # Increase width
-        height=1000,  # Increase height
+             width=1500,  
+        height=1000,
       
     )
 
-    # Display the plot in Streamlit
     st.plotly_chart(fig)
 
 
 def create_2d_scatter_plot(indicator):
-    # Get the current file's directory and form the absolute path for the CSV
     base_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.abspath(os.path.join(base_dir, f'../models/clusters_{indicator}.csv'))
     
-    # Load CSV data into a DataFrame
     df = pd.read_csv(csv_path)
     
-    # Check if necessary columns exist
     if indicator not in df.columns or 'risk' not in df.columns or 'name' not in df.columns:
         raise ValueError(f"CSV must contain the '{indicator}', 'risk', and 'name' columns.")
     
-    # Ensure country and indicator columns are cleaned up (remove NaNs)
-    df_cleaned = df.dropna(subset=[indicator])  # Drop rows where indicator is NaN
+    df_cleaned = df.dropna(subset=[indicator])  
     
-    # Create a scatter plot using Plotly Express
     fig = px.scatter(
         df_cleaned, 
         x='name', 
         y=indicator, 
-        color='risk',  # Color by the risk column
+        color='risk',  
         labels={'name': 'Country', indicator: indicator, 'risk': 'Risk Level'},
         title=f'2D Scatter Plot of {indicator} by Country and Risk Level'
     )
     
-    # Update layout for aesthetics with a white background and a custom theme
     fig.update_layout(
-        template='plotly',  # White background theme
+        template='plotly',  
         xaxis_title='Country',
         yaxis_title=indicator,
-        width=1500,  # Increase width
-        height=800,  # Increase height
+        width=1500,  
+        height=800,  
     )
     
-    # Display the plot in Streamlit
     st.plotly_chart(fig)
 
 
 
 def make_predictions(indicator, country, year):
-    # Get the current year
     current_year = year
     
-    # Generate a list of years starting from the next year to the next 'years_ahead' years
     years_to_predict = [current_year + i for i in range(1, 10 + 1)]
     
-    # Initialize an empty dictionary to store predictions
     predictions = {}
     
-    # Function to get prediction for a specific year
     def get_prediction_for_year(year):
         return year, get_all_predictions([indicator], country, year)
     
-    # Use ThreadPoolExecutor to fetch predictions concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        # Map each year to the get_prediction_for_year function
         results = executor.map(get_prediction_for_year, years_to_predict)
         
-        # Store the predictions in the dictionary
         for year, prediction in results:
             predictions[year] = prediction
     
@@ -409,25 +374,20 @@ def plot_predictions(predictions):
     :param predictions: Dictionary with years as keys and prediction values as sub-dictionaries
     :return: None
     """
-    # Convert the predictions dictionary into a pandas DataFrame
     df = pd.DataFrame.from_dict(predictions, orient='index')
     df.reset_index(inplace=True)
     df.columns = ['Year', 'Prevalence of hypertension%']
     
-    # Add small random noise to the 'Prevalence of hypertension%' values
-    noise = np.random.normal(0, 0.1, size=df.shape[0])  # Small noise with mean=0 and std=0.1
-    df['Prevalence of hypertension%'] += noise  # Add noise to the column
+    noise = np.random.normal(0, 0.1, size=df.shape[0])  
+    df['Prevalence of hypertension%'] += noise  
     
-    # Create the Plotly line chart
     fig = px.line(df, x='Year', y='Prevalence of hypertension%', title='Prevalence of Hypertension Over Time' ,
                   
                    markers=True,)
     
-    # Update the x-axis and y-axis for better visibility
     fig.update_xaxes(rangeslider_visible=True)
-    fig.update_yaxes(range=[df['Prevalence of hypertension%'].min() - 1, df['Prevalence of hypertension%'].max() + 1])  # Adjust y-range to keep trend visible
-    fig.update_layout(template='plotly_dark', height=900)  # Set a dark theme for the plot and increase height
-    # Show the plot in Streamlit
+    fig.update_yaxes(range=[df['Prevalence of hypertension%'].min() - 1, df['Prevalence of hypertension%'].max() + 1])  
+    fig.update_layout(template='plotly_dark', height=900)  
     st.plotly_chart(fig)
 def plot_predictions_2(predictions):
     """
@@ -437,7 +397,6 @@ def plot_predictions_2(predictions):
     :param predictions: Dictionary with years as keys and prediction values as sub-dictionaries.
     :return: None
     """
-    # Convert the predictions dictionary into a pandas DataFrame
     years = list(predictions.keys())
     values = [list(prediction.values())[0] for prediction in predictions.values()]
     
@@ -446,30 +405,22 @@ def plot_predictions_2(predictions):
         'Prediction': values
     })
     
-    # Add small random noise to the predictions for fluctuations
-    noise = np.random.normal(0, 0.2, size=df.shape[0])  # Small noise with mean=0 and std=0.2
-    df['Prediction'] += noise  # Add noise to the prediction values
+    noise = np.random.normal(0, 0.2, size=df.shape[0])  
+    df['Prediction'] += noise  
     
-    # Plotting a histogram and a scatter plot on the same graph
     fig = px.histogram(df, x="Year", y="Prediction", histfunc="avg", title="Prediction over Time")
     
-    # Update the histogram with custom binning and x-axis
-    fig.update_traces(xbins_size=1)  # Binning to show each year distinctly
+    fig.update_traces(xbins_size=1)  
     fig.update_xaxes(showgrid=True, ticklabelmode="period", tickformat="%Y")
     
-    # Customize layout to have a clean, natural appearance
     fig.update_layout(
-        bargap=0.2,  # Slightly larger gap between bars for a more airy look
-        font=dict(color='black'),  # Set font color to black for better readability
-        title_font=dict(size=22),  # Slightly smaller title size for a balanced look
-        title_x=0.5,  # Center the title
-        margin={"r": 20, "t": 40, "l": 40, "b": 40},  # Adjust margins for a cleaner look
+        bargap=0.2,  
+        font=dict(color='black'),   
+        title_font=dict(size=22), 
+        title_x=0.5,  
+        margin={"r": 20, "t": 40, "l": 40, "b": 40}, 
     )
     
-    # Adding scatter trace for daily markers (set to blue)
     fig.add_trace(go.Scatter(mode="markers", x=df["Year"], y=df["Prediction"], name="Predictions", marker=dict(color='blue')))
     
-    # Show the plot in Streamlit
     st.plotly_chart(fig)
-
-
