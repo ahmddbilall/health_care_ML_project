@@ -16,7 +16,6 @@ import plotly.graph_objects as go
 
 from concurrent.futures import ThreadPoolExecutor
 
-
 def load_model(indicator, cluster_id, model_dir='./models/pklFiles/'):
     model_filename = None
     model_name = None
