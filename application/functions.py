@@ -1,6 +1,8 @@
 import pickle
 import numpy as np
+from urllib.request import urlopen
 import os
+import json
 import pandas as pd
 from prophet import Prophet
 from statsmodels.tsa.arima.model import ARIMA
@@ -423,3 +425,204 @@ def plot_predictions_2(predictions):
     fig.add_trace(go.Scatter(mode="markers", x=df["Year"], y=df["Prediction"], name="Predictions", marker=dict(color='blue')))
     
     st.plotly_chart(fig)
+
+
+def plot_population_horizontal_bar_chart(df):  
+    filtered_df = df[df['year'] == 2024]
+    filtered_df = filtered_df.sort_values(by='pop2024', ascending=False)
+    filtered_df = filtered_df.head(10)
+    fig = px.bar(
+        filtered_df,
+        y='name',
+        x='pop2024',
+        title='Population of All Countries in 2024',
+        labels={'name': 'Country', 'pop2024': 'Population'},
+        color='pop2024',
+        orientation='h',
+        color_continuous_scale='viridis',
+        template='plotly_dark'
+    )
+    fig.update_layout(
+        yaxis_title='Country',
+        xaxis_title='Population',
+        height=900, 
+        width=1000
+    )
+    return fig
+
+
+
+def generate_income_level_chart(df):
+    unique_countries = df[['who_region', 'world_bank_income_level', 'name']].drop_duplicates()
+    region_income_country_count = unique_countries.groupby(['who_region', 'world_bank_income_level']).size().unstack(fill_value=0)
+    region_income_country_count.reset_index(inplace=True)
+    fig = px.bar(region_income_country_count,
+                 x='who_region',
+                 y=region_income_country_count.columns[1:],
+                 title='Income Levels Distribution Across WHO Regions',
+                 labels={'who_region': 'WHO Region', 'value': 'Number of Countries'},
+                 text_auto=True,
+                 barmode='stack',  
+                 category_orders={'who_region': region_income_country_count['who_region'].unique()},
+                 height=600)
+    return fig
+
+
+
+
+def plot_choropleth_map(df, selected_indicator, geojson_url='https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json'):
+    with urlopen(geojson_url) as response:
+        countries_geojson = json.load(response)
+    selected_columns = [ 'Number of new HIV infections', 'Suicide deaths', 
+                        'Adult obesity%', 'Tobacco use%', 'Alcohol consumption', 
+                        'Prevalence of hypertension%', 'life_expectancy', 'health_life_expectancy']
+    numeric_df = df[selected_columns + ['name']].dropna()
+    grouped_df = numeric_df.groupby('name').mean()
+    if selected_indicator not in grouped_df.columns:
+        raise ValueError(f"{selected_indicator} is not a valid column in the dataset")
+    fig = px.choropleth(
+        grouped_df.reset_index(), 
+        geojson=countries_geojson,
+        locations='name',
+        featureidkey='properties.name', 
+        color=selected_indicator,
+        color_continuous_scale="Viridis",
+        range_color=(grouped_df[selected_indicator].min(), grouped_df[selected_indicator].max()),
+        labels={selected_indicator: selected_indicator.replace('_', ' ').title()},
+        title=f'{selected_indicator.replace("_", " ").title()} by Country'
+    )
+    fig.update_geos(
+        fitbounds="locations", 
+        visible=False,
+        projection_scale=1.2
+    )
+    fig.update_layout(
+        margin={"r": 0, "t": 50, "l": 0, "b": 0},  # Minimize margins
+        width=1200,  
+        height=400   
+    )
+    return fig
+
+
+
+def plot_health_indicators_by_country(df,selected_country):
+    country_list = df['name'].unique()
+    filtered_df = df[df['name'] == selected_country]
+    indicators = {
+        'Life Expectancy': 'life_expectancy',
+        'Alcohol Consumption': 'Alcohol consumption',
+        'Tobacco Use': 'Tobacco use%'
+    }
+    fig = go.Figure()
+    for indicator_name, column in indicators.items():
+        fig.add_trace(go.Scatter(
+            x=filtered_df['year'],
+            y=filtered_df[column],
+            mode='lines+markers',
+            name=indicator_name
+        ))
+    fig.update_layout(
+        title=f'Health Indicators Over Time for {selected_country}',
+        xaxis_title='Year',
+        yaxis_title='Normalized Value',
+        hovermode='x unified',
+        legend_title='Indicators',
+        template='plotly_dark',
+        width=1000,
+        height=600
+    )
+    st.plotly_chart(fig)
+def plot_health_life_hypertension_obesity(df, selected_country):
+    filtered_df = df[df['name'] == selected_country]
+    indicators = {
+        'Health Life Expectancy': 'health_life_expectancy',
+        'Prevalence of Hypertension': 'Prevalence of hypertension%',
+        'Adult Obesity': 'Adult obesity%'
+    }
+    fig = go.Figure()
+    for indicator_name, column in indicators.items():
+        fig.add_trace(go.Scatter(
+            x=filtered_df['year'],
+            y=filtered_df[column],
+            mode='lines+markers',
+            name=indicator_name
+        ))
+    fig.update_layout(
+        title=f'Health Life Expectancy, Hypertension, and Obesity Over Time for {selected_country}',
+        xaxis_title='Year',
+        yaxis_title='Normalized Value',
+        hovermode='x unified',
+        legend_title='Indicators',
+        template='plotly_dark',
+        width=1000,
+        height=600
+    )
+    st.plotly_chart(fig)
+
+
+
+
+
+def plot_health_indicators(df):
+    selected_columns = ['population', 'Number of new HIV infections', 'Suicide deaths', 
+                        'Adult obesity%', 'Tobacco use%', 'Alcohol consumption', 
+                        'Prevalence of hypertension%', 'life_expectancy', 'health_life_expectancy']
+    numeric_df = df[selected_columns]
+    grouped_df = df.groupby('year')[selected_columns].mean()
+    df_normalized=grouped_df
+    fig = go.Figure()
+    for col in df_normalized.columns:
+        fig.add_trace(go.Scatter(
+            x=df_normalized.index,  
+            y=df_normalized[col],   
+            mode='lines+markers',
+            name=col 
+        ))
+    fig.update_layout(
+        title='Normalized Interactive Line Chart of Health Indicators by Year',
+        xaxis_title='Year',
+        yaxis_title='Normalized Values (0-1)',
+        hovermode='x unified', 
+        legend_title='Indicators',
+        template='plotly_dark', 
+        width=1000,
+        height=600
+    )
+    return fig
+
+
+
+
+
+
+def plot_grouped_health_expenditure(df, group_by_column='world_bank_income_level'):
+
+    group_data = df.groupby(group_by_column)['health_expenditure'].mean().reset_index()
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=group_data['health_expenditure'], 
+        y=group_data[group_by_column],
+        name='Health Expenditure by ' + group_by_column,
+        marker_color='rgb(26, 118, 255)'
+    ))
+    fig.update_layout(
+        title=f'Average Health Expenditure by {group_by_column.capitalize()}',
+        xaxis_tickfont_size=14,
+        yaxis=dict(
+            title=dict(
+                text="Health Expenditure (USD)",
+                font=dict(size=16)
+            ),
+            tickfont_size=14,
+        ),
+        legend=dict(
+            x=0,
+            y=1.0,
+            bgcolor='rgba(255, 255, 255, 0)',
+            bordercolor='rgba(255, 255, 255, 0)'
+        ),
+        barmode='group',
+        bargap=0.15,
+        bargroupgap=0.1  
+    )
+    return fig
