@@ -427,6 +427,60 @@ def plot_predictions_2(predictions):
     st.plotly_chart(fig)
 
 
+
+def plot_predictions_new(predictions, selected_indicator):
+    df = pd.DataFrame.from_dict(predictions, orient='index')
+    df.reset_index(inplace=True)
+    df.columns = ['Year', selected_indicator]
+    
+    noise = np.random.normal(0, 0.1, size=df.shape[0])  
+    df[selected_indicator] += noise  
+    
+    fig = px.line(df, x='Year', y=selected_indicator, title=f'{selected_indicator} Over Time', markers=True)
+    
+    fig.update_xaxes(rangeslider_visible=True)
+    fig.update_yaxes(range=[df[selected_indicator].min() - 1, df[selected_indicator].max() + 1])  
+    fig.update_layout(template='plotly_dark', height=900)  
+    st.plotly_chart(fig)
+
+def plot_predictions_2_new(predictions, selected_indicator):
+    years = list(predictions.keys())
+    values = [list(prediction.values())[0] for prediction in predictions.values()]
+    
+    df = pd.DataFrame({
+        'Year': years,
+        'Prediction': values
+    })
+    
+    noise = np.random.normal(0, 0.2, size=df.shape[0])  
+    df['Prediction'] += noise  
+    
+    fig = px.histogram(df, x="Year", y="Prediction", histfunc="avg", title=f"{selected_indicator} over Time")
+    
+    fig.update_traces(xbins_size=1)  
+    fig.update_xaxes(showgrid=True, ticklabelmode="period", tickformat="%Y")
+    
+    fig.update_layout(
+        bargap=0.2,  
+        font=dict(color='black'),   
+        title_font=dict(size=22), 
+        title_x=0.5,  
+        margin={"r": 20, "t": 40, "l": 40, "b": 40}, 
+    )
+    
+    fig.add_trace(go.Scatter(mode="markers", x=df["Year"], y=df["Prediction"], name="Predictions", marker=dict(color='blue')))
+    
+    st.plotly_chart(fig)
+
+
+
+
+
+
+
+
+
+
 def plot_population_horizontal_bar_chart(df):  
     filtered_df = df[df['year'] == 2024]
     filtered_df = filtered_df.sort_values(by='pop2024', ascending=False)
