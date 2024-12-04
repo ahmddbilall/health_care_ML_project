@@ -25,8 +25,8 @@ def predict_all_indicators():
     st.write(f"Selected Year: {selected_year}")
     if st.button("Predict"):
         predictions=make_predictions(select_indicator,selected_country,selected_year)
-        plot_predictions(predictions)
-        plot_predictions_2(predictions)
+        plot_predictions_new(predictions,select_indicator)
+        plot_predictions_2_new(predictions,select_indicator)
         
 
 
