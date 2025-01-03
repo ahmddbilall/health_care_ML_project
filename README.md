@@ -3,7 +3,8 @@
 This project leverages data from the World Health Organization (WHO) to build machine learning models that predict disease spread and optimize resource allocation for public health management. The data includes metrics like disease cases, recovery rates, vaccination rates, and hospital capacity, which are visualized using Power BI and processed with machine learning for predictive insights.
 
 
-<video src="visualization/project%20demo.mp4" controls width="800"></video>
+[Watch Project Demo Video](visualization/project%20demo.mp4)
+
 
 ![Screenshot of Application](visualization/image1.jpg)
 
